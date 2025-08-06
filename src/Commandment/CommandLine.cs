@@ -1,16 +1,41 @@
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Commandment;
 
 public static class CommandExtensions {
   public static Command AddOpt<T>(this Command self, Option<T> opt) {
     self.Add(opt);
+    return self;
+  }
+
+  class CustomAsyncAction(Func<ParseResult, CancellationToken, Task<int>> Action) : AsynchronousCommandLineAction {
+    public override Task<int> InvokeAsync(ParseResult parseResult, CancellationToken cancellationToken = default) {
+      return Action(parseResult, cancellationToken);
+    }
+  }
+
+  class CustomAction(Func<ParseResult, int> Action) : SynchronousCommandLineAction {
+    public override int Invoke(ParseResult parseResult) {
+      return Action(parseResult);
+    }
+  }
+
+  public static Command WithAction(this Command self, Func<ParseResult, int> action) {
+    self.Action = new CustomAction(action);
+    return self;
+  }
+
+  public static Command WithAsyncAction(this Command self, Func<ParseResult, CancellationToken, Task<int>> asyncAction) {
+    self.Action = new CustomAsyncAction(asyncAction);
     return self;
   }
 }
@@ -90,7 +115,7 @@ public static class OptionExtensions {
     });
   }
 
-  public static Option<string> ValidEnumValue<E>(this Option<string> self, bool ignoreCase, bool showVariantsOnError)
+  public static Option<string> ValidEnumVariant<E>(this Option<string> self, bool ignoreCase, bool showVariantsOnError)
     where E : struct, Enum
   {
     return self.WithValidator((self, result) => {

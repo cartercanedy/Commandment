@@ -7,12 +7,14 @@
     <RollForward>LatestMajor</RollForward>
 
     <PackageId>Commandment</PackageId>
+    <PackageProjectUrl>https://github.com/cartercanedy/Commandment</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cartercanedy/Commandment</RepositoryUrl>
     <Version>2.0.0-beta</Version>
     <Authors>Carter Canedy</Authors>
-    <Copyright>Copyright (c) Carter Canedy &lt;cartercanedy42@gmail.com&gt; 2025</Copyright>
+    <Copyright>Copyright (c) 2025 Carter Canedy &lt;cartercanedy42@gmail.com&gt;</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>Fluent builder extensions for the System.CommandLine API</Description>
-    <PackageTags>CommandLine CLI System.CommandLine Fluent Builder</PackageTags>
+    <PackageTags>CommandLine, CLI, System.CommandLine, Fluent, Builder</PackageTags>
     <RootNamespace>Commandment</RootNamespace>
   </PropertyGroup>
 
