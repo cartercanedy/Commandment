@@ -1,11 +1,10 @@
 <div align="center">
+  <img width="384" src="./res/commandment.png" />
 
-<img width="384" src="./res/commandment.png" />
+  <br>
 
-<br>
-
-# Commandment
-### *Let there be a good command-line interface*
+  # Commandment
+  ### *Let there be a good command-line interface*
 
 </div>
 

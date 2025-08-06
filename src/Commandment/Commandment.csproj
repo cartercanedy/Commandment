@@ -14,9 +14,13 @@
     <Copyright>Copyright (c) 2025 Carter Canedy &lt;cartercanedy42@gmail.com&gt;</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>Fluent builder extensions for the System.CommandLine API</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>CommandLine, CLI, System.CommandLine, Fluent, Builder</PackageTags>
-    <RootNamespace>Commandment</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta6.25358.103" />
