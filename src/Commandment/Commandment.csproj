@@ -10,11 +10,18 @@
     <Version>2.0.0-beta</Version>
     <Authors>Carter Canedy</Authors>
     <Copyright>Copyright (c) Carter Canedy &lt;cartercanedy42@gmail.com&gt; 2025</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>Fluent builder extensions for the System.CommandLine API</Description>
     <PackageTags>CommandLine CLI System.CommandLine Fluent Builder</PackageTags>
+    <RootNamespace>Commandment</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta6.25358.103" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <Compile Remove="Numerics.cs" />
+  </ItemGroup>
+
 </Project>
