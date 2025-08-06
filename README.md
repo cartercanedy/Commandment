@@ -14,7 +14,7 @@
 
 ## Add to your project
 ```powershell
-$> dotnet add package Commandment
+$> dotnet add package Commandment --prerelease
 ```
 
 ## Build a fluent and composable CLI
@@ -73,6 +73,10 @@ enum MyEnum {
 --bar='Foo'
 --baz='Program.cs'
 ```
+
+<br>
+
+---
 
 ## Future plans:
 - [x] Implement fluent extensions
