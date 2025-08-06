@@ -4,7 +4,7 @@
   <br>
 
   # Commandment
-  ### *Let there be a good command-line interface*
+  ### _Let there be a good command-line interface_
 
 </div>
 
@@ -18,46 +18,60 @@ $> dotnet add package Commandment
 ```
 
 ## Build a fluent and composable CLI
+### _Program.cs_
 ```csharp
 using System.CommandLine;
 using Commandment;
 
 // Create build a typed argument ...
-Option<uint> fooOpt = new("--foo", "-f")
+var fooOpt = new Option<uint>("--foo", "-f")
   .WithDescription("Foo")
   .NonZero() // ... with convenient numeric validation methods
   .Required();
+
+// Create an option that takes a variant of `MyEnum` ...
+var barOpt = new Option<string>("--bar", "-b")
+  .WithDescription("Bar")
+  .ValidEnumVariant<MyEnum>(ignoreCase: true, showVariantsOnError: true) // ... with configurable parsing and validation
+  .Optional()
+  .ZeroOrOneArg()
+  .WithDefaultValue(MyEnum.Baz.ToString());
+
+// Create an option that takes a string ...
+var bazOpt = new Option<string>("--baz", "-B")
+  .WithDescription("Baz")
+  .ValidFilePath() // ... with file/directory path validation
+  .Required(true);
+
+// Put it all together
+new RootCommand("My first Commandment-based CLI")
+  .AddOpt(fooOpt)
+  .AddOpt(barOpt)
+  .AddOpt(bazOpt)
+  .WithAsyncAction(async (result, cancelToken) => {
+    Console.WriteLine($"--foo='{result.GetValue(fooOpt)}'");
+    Console.WriteLine($"--bar='{result.GetValue(barOpt)}'");
+    Console.WriteLine($"--baz='{result.GetValue(bazOpt)}'");
+
+    await Task.CompletedTask;
+
+    return 0;
+  })
+  .Parse(["--foo=42", "--bar=Foo", "-BProgram.cs"])
+  .Invoke();
 
 enum MyEnum {
   Foo,
   Bar,
   Baz
 }
+```
 
-// Create an option that takes a variant of `MyEnum` ...
-Option<MyEnum> barOpt = new("--bar", "-b")
-  .WithDescription("Bar")
-  .ValidEnumVariant(ignoreCase: true, showVariantsOnError: true) // ... with configurable parsing and validation
-  .Optional()
-  .ZeroOrOneArg()
-  .WithDefaultValue(MyEnum.Baz);
-
-// Create an option that takes a string ...
-Option<string> bazOpt = new("--baz", "-B")
-  .WithDescription("Baz")
-  .ValidFilePath() // ... with file/directory path validation
-  .Required(true);
-
-// Put it all together
-RootCommand cli = new RootCommand("MyCLI")
-  .AddOpt(fooOpt)
-  .AddOpt(barOpt)
-  .WithAsyncAction(async (result, cancelToken) => {
-    await Task.CompletedTask;
-    return 0;
-  })
-  .Parse()
-  .Invoke();
+### Output:
+```
+--foo='42'
+--bar='Foo'
+--baz='Program.cs'
 ```
 
 ## Future plans:
