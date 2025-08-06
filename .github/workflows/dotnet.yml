@@ -1,0 +1,39 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        dotnet_version: [ "7.0.x", "8.0.x", "9.0.x" ]
+        os: [ ubuntu-latest, windows-latest ]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ matrix.dotnet_version }}
+    - name: Restore dependencies
+      run: dotnet restore ./src/Commandment/Commandment.csproj
+    - name: Build
+      if: matrix.dotnet_version != '7.0.x'
+      run: dotnet build --no-restore ./src/Commandment/Commandment.csproj
+    - name: Build (dotnet 7)
+      if: matrix.dotnet_version == '7.0.x'
+      run: dotnet build --no-restore -p:LangVersion=preview ./src/Commandment/Commandment.csproj
+
+
+# Save the testing steps until testing actually gets implemented
+#     - name: Test
+#       run: dotnet test --no-build --verbosity normal
