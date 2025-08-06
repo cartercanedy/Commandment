@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.IO;
+using System.Linq;
 using System.Numerics;
+using System.Text;
 
 namespace Commandment;
 
@@ -14,6 +17,7 @@ public static class CommandExtensions {
 }
 
 public static class OptionExtensions {
+#if NET7_0_OR_GREATER
   public static Option<T> NonZero<T>(this Option<T> self) where T : INumber<T> {
     self.Validators.Add(result => {
       var zero = T.CreateChecked(0);
@@ -65,26 +69,36 @@ public static class OptionExtensions {
 
     return self;
   }
+#endif
 
-  public static Option<T> ZeroOrOneArg<T>(this Option<T> self) {
-    self.Arity = ArgumentArity.ZeroOrOne;
+  public static Option<T> WithArity<T>(this Option<T> self, ArgumentArity arity) {
+    self.Arity = arity;
     return self;
   }
 
-  public static Option<T> OneArg<T>(this Option<T> self) {
-    self.Arity = ArgumentArity.ExactlyOne;
+  public static Option<T> NoArgs<T>(this Option<T> self) =>
+    self.WithArity(ArgumentArity.Zero);
+
+  public static Option<T> ZeroOrOneArg<T>(this Option<T> self) =>
+    self.WithArity(ArgumentArity.ZeroOrOne);
+
+  public static Option<T> ZeroOrMoreArgs<T>(this Option<T> self) =>
+    self.WithArity(ArgumentArity.ZeroOrMore);
+
+  public static Option<T> OneArg<T>(this Option<T> self) =>
+    self.WithArity(ArgumentArity.ExactlyOne);
+
+  public static Option<T> OneOrMoreArgs<T>(this Option<T> self) =>
+    self.WithArity(ArgumentArity.OneOrMore);
+
+  public static Option<T> Required<T>(this Option<T> self, bool required) {
+    self.Required = required;
     return self;
   }
 
-  public static Option<T> Required<T>(this Option<T> self) {
-    self.Required = true;
-    return self;
-  }
+  public static Option<T> Required<T>(this Option<T> self) => self.Required(true);
 
-  public static Option<T> Optional<T>(this Option<T> self) {
-    self.Required = false;
-    return self;
-  }
+  public static Option<T> Optional<T>(this Option<T> self) => self.Required(false);
 
   public static Option<T> WithParser<T>(this Option<T> self, Func<ArgumentResult, T?> parser) {
     self.CustomParser = parser;
@@ -111,12 +125,50 @@ public static class OptionExtensions {
     return self;
   }
 
-  public static Option<string> ValidPath(this Option<string> self) {
+  public static Option<string> ValidFilePath(this Option<string> self) {
     return self.WithValidator((self, result) => {
       var path = result.GetValue(self);
+
+      if (!File.Exists(path)) {
+        result.AddError($"Path '{path}' doesn't exist");
+      }
+    });
+  }
+
+  public static Option<string> ValidDirectoryPath(this Option<string> self) {
+    return self.WithValidator((self, result) => {
+      var path = result.GetValue(self);
+
       if (!Directory.Exists(path)) {
         result.AddError($"Path '{path}' doesn't exist");
       }
+    });
+  }
+
+  public static Option<string> ValidEnumValue<E>(this Option<string> self, bool ignoreCase, bool showVariantsOnError)
+    where E : struct, Enum
+  {
+    return self.WithValidator((self, result) => {
+      var value = result.GetValue(self);
+
+      if (Enum.TryParse<E>(value, ignoreCase, out var _)) {
+        return;
+      }
+
+      var sb = new StringBuilder()
+        .AppendLine($"'{value}' is not a valid option for argument '{self.Name}'");
+
+      if (showVariantsOnError) {
+        IEnumerable<string> validVariants = Enum.GetNames(typeof(E));
+
+        if (ignoreCase) {
+          validVariants = validVariants.Select(name => name.ToLower());
+        }
+
+        sb.AppendLine($"\tValid options are: [{string.Join(", ", validVariants)}]");
+      }
+
+      result.AddError(sb.ToString());
     });
   }
 }

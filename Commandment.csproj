@@ -1,10 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>netstandard2.1;net7.0</TargetFrameworks>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <RollForward>LatestMajor</RollForward>
+
+    <PackageId>Commandment</PackageId>
+    <Version>2.0.0-beta</Version>
+    <Authors>Carter Canedy</Authors>
+    <Copyright>Copyright (c) Carter Canedy &lt;cartercanedy42@gmail.com&gt; 2025</Copyright>
+    <Description>Fluent builder extensions for the System.CommandLine API</Description>
+    <PackageTags>CommandLine CLI System.CommandLine Fluent Builder</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
