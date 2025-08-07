@@ -45,9 +45,9 @@ var bazOpt = new Option<string>("--baz", "-B")
 
 // Put it all together
 new RootCommand("My first Commandment-based CLI")
-  .AddOpt(fooOpt)
-  .AddOpt(barOpt)
-  .AddOpt(bazOpt)
+  .AddOption(fooOpt)
+  .AddOption(barOpt)
+  .AddOption(bazOpt)
   .WithAsyncAction(async (result, cancelToken) => {
     Console.WriteLine($"--foo='{result.GetValue(fooOpt)}'");
     Console.WriteLine($"--bar='{result.GetValue(barOpt)}'");

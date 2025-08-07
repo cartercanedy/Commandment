@@ -9,7 +9,7 @@
     <PackageId>Commandment</PackageId>
     <PackageProjectUrl>https://github.com/cartercanedy/Commandment</PackageProjectUrl>
     <RepositoryUrl>https://github.com/cartercanedy/Commandment</RepositoryUrl>
-    <Version>2.0.0-beta</Version>
+    <Version>2.0.0-beta1</Version>
     <Authors>Carter Canedy</Authors>
     <Copyright>Copyright (c) 2025 Carter Canedy &lt;cartercanedy42@gmail.com&gt;</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
